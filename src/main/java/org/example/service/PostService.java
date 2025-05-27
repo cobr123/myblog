@@ -9,29 +9,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostService {
 
-    private final PostRepository postRepository;
+    private final PostRepository repository;
 
     public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
+        this.repository = postRepository;
     }
 
     public Posts findAll(String search, int pageSize, int pageNumber) {
-        return postRepository.findAll(search, pageSize, pageNumber);
+        return repository.findAll(search, pageSize, pageNumber);
     }
 
     public Post findById(Long id) {
-        return postRepository.findById(id);
+        return repository.findById(id);
     }
 
-    public void insert(Post user) {
-        postRepository.insert(user);
+    public void insert(Post post) {
+        repository.insert(post);
     }
 
-    public void update(Post user) {
-        postRepository.update(user);
+    public void update(Post post) {
+        repository.update(post);
     }
 
     public void deleteById(Long id) {
-        postRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

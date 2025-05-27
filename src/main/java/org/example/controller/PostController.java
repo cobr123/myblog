@@ -51,7 +51,7 @@ public class PostController {
         return "redirect:/posts";
     }
 
-    @PostMapping(value = "/{id}", params = "_method=delete")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable(name = "id") Long id) {
         service.deleteById(id);
 

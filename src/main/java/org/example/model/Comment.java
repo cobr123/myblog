@@ -2,13 +2,15 @@ package org.example.model;
 
 public class Comment {
     private Long id;
+    private Long postId;
     private String text;
 
     public Comment() {
     }
 
-    public Comment(Long id, String text) {
+    public Comment(Long id, Long postId, String text) {
         this.id = id;
+        this.postId = postId;
         this.text = text;
     }
 
@@ -18,6 +20,14 @@ public class Comment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 
     public String getText() {

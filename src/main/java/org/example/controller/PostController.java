@@ -45,8 +45,8 @@ public class PostController {
     }
 
     @PostMapping
-    public String save(@ModelAttribute Post post) {
-        service.save(post);
+    public String insertPost(@ModelAttribute Post post) {
+        service.insert(post);
 
         return "redirect:/posts";
     }

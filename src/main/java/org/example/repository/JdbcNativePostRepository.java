@@ -22,7 +22,7 @@ public class JdbcNativePostRepository implements PostRepository {
     public Posts findAll(String search, int pageSize, int pageNumber) {
         if (search == null || search.isEmpty()) {
             List<Post> posts = jdbcTemplate.query(
-                    "select id, title, tags, text, imagePath, likesCount from posts order by id desc offset ? limit ?",
+                    "select id, title, tags, text, imagePath, likesCount from posts order by id desc limit ? offset ?",
                     (rs, rowNum) -> new Post(
                             rs.getLong("id"),
                             rs.getString("title"),
@@ -32,13 +32,13 @@ public class JdbcNativePostRepository implements PostRepository {
                             rs.getInt("likesCount"),
                             new ArrayList<>()
                     ),
-                    getOffset(pageSize, pageNumber),
-                    pageSize
+                    pageSize,
+                    getOffset(pageSize, pageNumber)
             );
             return new Posts(posts, search, new Paging(pageNumber, pageSize, false, false));
         } else {
             List<Post> posts = jdbcTemplate.query(
-                    "select id, title, tags, text, imagePath, likesCount from posts where tags like '%' || ? || '%' order by id desc offset ? limit ?",
+                    "select id, title, tags, text, imagePath, likesCount from posts where tags like concat('%', ?, '%') order by id desc limit ? offset ?",
                     (rs, rowNum) -> new Post(
                             rs.getLong("id"),
                             rs.getString("title"),
@@ -49,8 +49,8 @@ public class JdbcNativePostRepository implements PostRepository {
                             new ArrayList<>()
                     ),
                     search,
-                    getOffset(pageSize, pageNumber),
-                    pageSize
+                    pageSize,
+                    getOffset(pageSize, pageNumber)
             );
             return new Posts(posts, search, new Paging(pageNumber, pageSize, false, false));
         }
@@ -72,14 +72,21 @@ public class JdbcNativePostRepository implements PostRepository {
                         rs.getString("imagePath"),
                         rs.getInt("likesCount"),
                         new ArrayList<>()
-                )
+                ),
+                id
         ).getFirst();
     }
 
     @Override
-    public void save(Post post) {
+    public void insert(Post post) {
         jdbcTemplate.update("insert into posts(title, tags, text, imagePath, likesCount) values(?, ?, ?, ?, ?)",
                 post.getTitle(), post.getTags(), post.getText(), post.getImagePath(), post.getLikesCount());
+    }
+
+    @Override
+    public void update(Post post) {
+        jdbcTemplate.update("update posts set title = ?, tags = ?, text = ?, imagePath = ?, likesCount = ? where id = ?",
+                post.getTitle(), post.getTags(), post.getText(), post.getImagePath(), post.getLikesCount(), post.getId());
     }
 
     @Override

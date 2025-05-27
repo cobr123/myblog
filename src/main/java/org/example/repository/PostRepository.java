@@ -9,7 +9,9 @@ public interface PostRepository {
 
     Post findById(Long id);
 
-    void save(Post user);
+    void insert(Post user);
+
+    void update(Post user);
 
     void deleteById(Long id);
 } 

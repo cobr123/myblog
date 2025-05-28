@@ -23,8 +23,8 @@ public class PostService {
         return repository.findById(id);
     }
 
-    public void insert(Post post) {
-        repository.insert(post);
+    public Long insert(Post post) {
+        return repository.insert(post);
     }
 
     public void update(Post post) {

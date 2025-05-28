@@ -4,8 +4,12 @@ import org.example.model.Paging;
 import org.example.model.Post;
 import org.example.model.Posts;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,9 +82,22 @@ public class JdbcNativePostRepository implements PostRepository {
     }
 
     @Override
-    public void insert(Post post) {
-        jdbcTemplate.update("insert into posts(title, tags, text, imagePath, likesCount) values(?, ?, ?, ?, ?)",
-                post.getTitle(), post.getTags(), post.getText(), post.getImagePath(), post.getLikesCount());
+    public Long insert(Post post) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+                    PreparedStatement ps = connection.prepareStatement("insert into posts(title, tags, text, imagePath, likesCount) values(?, ?, ?, ?, ?)",
+                            Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, post.getTitle());
+                    ps.setString(2, post.getTags());
+                    ps.setString(3, post.getText());
+                    ps.setString(4, post.getImagePath());
+                    ps.setInt(5, post.getLikesCount());
+                    return ps;
+                },
+                keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface PostRepository {
 
     Post findById(Long id);
 
-    void insert(Post post);
+    Long insert(Post post);
 
     void update(Post post);
 

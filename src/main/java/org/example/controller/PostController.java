@@ -5,10 +5,15 @@ import org.example.model.Post;
 import org.example.model.Posts;
 import org.example.service.CommentService;
 import org.example.service.PostService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 
@@ -32,7 +37,7 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "1", name = "pageNumber") int pageNumber
     ) {
         Posts posts = postService.findAll(search, pageSize, pageNumber);
-        for (Post post: posts.posts()) {
+        for (Post post : posts.posts()) {
             List<Comment> comments = commentService.findByPostId(post.getId());
             post.setComments(comments);
         }
@@ -56,11 +61,20 @@ public class PostController {
         return "add-post";
     }
 
-    @PostMapping
-    public String insertPost(@ModelAttribute Post post) {
-        postService.insert(post);
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public String insertPost(@RequestPart String title, @RequestPart String text, @RequestPart MultipartFile image, @RequestPart String tags) throws IOException {
+        File tempFile = File.createTempFile("prefix-", "-suffix");
+        Files.write(tempFile.toPath(), image.getBytes());
+        tempFile.deleteOnExit();
 
-        return "redirect:/posts";
+        Post post = new Post();
+        post.setTitle(title);
+        post.setText(text);
+        post.setTags(tags);
+        post.setImagePath(tempFile.getAbsolutePath());
+        Long id = postService.insert(post);
+
+        return "redirect:/posts/" + id;
     }
 
     @PostMapping("/{id}/delete")

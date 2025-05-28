@@ -34,11 +34,13 @@ class PostServiceTest {
         final String tag1 = UUID.randomUUID().toString();
         final String tag2 = UUID.randomUUID().toString();
         Post validPost = new Post(1L, title, tag1 + " " + tag2, "text", "imagePath", 0, new ArrayList<>());
-        postService.insert(validPost);
+        Long id = postService.insert(validPost);
 
         Posts savedPosts = postRepository.findAll(tag2, 10, 1);
         Post foundPost = savedPosts.posts().stream().filter(p -> p.getTitle().equals(title)).findAny().get();
-        Post savedPost = postRepository.findById(foundPost.getId());
+        assertEquals(id, foundPost.getId(), "Post id should match");
+
+        Post savedPost = postRepository.findById(id);
         assertNotNull(savedPost, "Saved post should not be null");
         assertEquals(title, savedPost.getTitle(), "Post title should match");
     }

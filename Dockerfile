@@ -17,5 +17,5 @@ RUN mvn package -Dmaven.test.skip
 
 # Run the application (using the JRE, not the JDK)
 FROM tomcat:11-jdk21 AS runtime
-COPY --from=build /build/target/myblog.war /usr/local/tomcat/webapps/myblog.war
+COPY --from=build /build/target/myblog.war /usr/local/tomcat/webapps/ROOT.war
 CMD ["catalina.sh", "run"]

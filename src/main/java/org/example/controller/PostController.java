@@ -96,7 +96,7 @@ public class PostController {
     }
 
     @PostMapping("/{id}/like")
-    public String like(@PathVariable("id") Long id, @PathVariable("like") boolean like) {
+    public String like(@PathVariable("id") Long id, @RequestParam("like") boolean like) {
         Post post = postService.findById(id);
         if (like) {
             post.setLikesCount(post.getLikesCount() + 1);
@@ -108,7 +108,7 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    @PostMapping("/{id}/edit")
+    @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
         Post post = postService.findById(id);
         List<Comment> comments = commentService.findByPostId(post.getId());

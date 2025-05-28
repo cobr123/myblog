@@ -65,7 +65,11 @@ public class Post {
     }
 
     public String getTextPreview() {
-        return text;
+        if (text.length() < 512) {
+            return text;
+        } else {
+            return text.substring(0, 512) + "..";
+        }
     }
 
     public void setText(String text) {

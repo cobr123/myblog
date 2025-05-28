@@ -3,8 +3,8 @@ create table if not exists posts(
   id bigserial primary key,
   title varchar(256) not null,
   tags varchar(256) not null,
-  text varchar(256) not null,
-  imagePath varchar(256) not null,
+  text varchar(4096) not null,
+  imagePath varchar(512) not null,
   likesCount integer not null);
 
 -- Таблица с комментариями

@@ -60,8 +60,9 @@ public class Post {
         return text;
     }
 
-    public String getTextParts() {
-        return text;
+    public List<String> getTextParts() {
+        // текст поста, разбитый на абзацы
+        return Arrays.asList(text.split("\r?\n"));
     }
 
     public String getTextPreview() {

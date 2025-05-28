@@ -24,7 +24,7 @@ public class ImageController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public byte[] get(@PathVariable(name = "id") Long id) throws IOException {
+    public byte[] get(@PathVariable("id") Long id) throws IOException {
         Post post = service.findById(id);
         return Files.readAllBytes(Paths.get(post.getImagePath()));
     }

@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String post(Model model, @PathVariable(name = "id") Long id) {
+    public String post(Model model, @PathVariable("id") Long id) {
         Post post = postService.findById(id);
         List<Comment> comments = commentService.findByPostId(post.getId());
         post.setComments(comments);
@@ -62,7 +62,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String insertPost(@RequestPart String title, @RequestPart String text, @RequestPart MultipartFile image, @RequestPart String tags) throws IOException {
+    public String insertPost(@RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
         File tempFile = File.createTempFile("prefix-", "-suffix");
         Files.write(tempFile.toPath(), image.getBytes());
         tempFile.deleteOnExit();
@@ -78,7 +78,7 @@ public class PostController {
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable(name = "id") Long id) {
+    public String delete(@PathVariable("id") Long id) {
         postService.deleteById(id);
 
         return "redirect:/posts";

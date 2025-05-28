@@ -6,6 +6,7 @@ import org.example.model.Post;
 import org.example.model.Posts;
 import org.example.repository.PostRepository;
 import org.example.service.PostService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ class PostServiceTest {
 
     @Autowired
     private PostService postService;
+
+    @BeforeEach
+    void setUp(){
+        postRepository.deleteAll();
+    }
 
     @Test
     void testFindPostByTag() {

@@ -30,7 +30,7 @@ public class PostController {
     }
 
     @GetMapping
-    public String posts(
+    public String getAll(
             Model model,
             @RequestParam(required = false, defaultValue = "", name = "search") String search,
             @RequestParam(required = false, defaultValue = "10", name = "pageSize") int pageSize,
@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String post(Model model, @PathVariable("id") Long id) {
+    public String get(Model model, @PathVariable("id") Long id) {
         Post post = postService.findById(id);
         List<Comment> comments = commentService.findByPostId(post.getId());
         post.setComments(comments);
@@ -57,12 +57,12 @@ public class PostController {
     }
 
     @GetMapping("/add")
-    public String post() {
+    public String getForm() {
         return "add-post";
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String insertPost(@RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
+    public String insert(@RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
         File tempFile = File.createTempFile("prefix-", "-suffix");
         Files.write(tempFile.toPath(), image.getBytes());
         tempFile.deleteOnExit();
@@ -73,6 +73,24 @@ public class PostController {
         post.setTags(tags);
         post.setImagePath(tempFile.getAbsolutePath());
         Long id = postService.insert(post);
+
+        return "redirect:/posts/" + id;
+    }
+
+    @PostMapping(name = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public String update(@RequestParam("id") Long id, @RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
+        Post post = postService.findById(id);
+
+        if (image != null) {
+            File tempFile = File.createTempFile("prefix-", "-suffix");
+            Files.write(tempFile.toPath(), image.getBytes());
+            tempFile.deleteOnExit();
+            post.setImagePath(tempFile.getAbsolutePath());
+        }
+        post.setTitle(title);
+        post.setText(text);
+        post.setTags(tags);
+        postService.update(post);
 
         return "redirect:/posts/" + id;
     }

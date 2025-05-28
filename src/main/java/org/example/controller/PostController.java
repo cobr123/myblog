@@ -90,6 +90,16 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
+    @PostMapping("/{id}/edit")
+    public String edit(Model model, @PathVariable("id") Long id) {
+        Post post = postService.findById(id);
+        List<Comment> comments = commentService.findByPostId(post.getId());
+        post.setComments(comments);
+        model.addAttribute("post", post);
+
+        return "add-post";
+    }
+
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
         postService.deleteById(id);

@@ -77,7 +77,7 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    @PostMapping(name = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String update(@RequestParam("id") Long id, @RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
         Post post = postService.findById(id);
 

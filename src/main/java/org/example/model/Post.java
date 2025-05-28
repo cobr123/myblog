@@ -65,11 +65,20 @@ public class Post {
         return Arrays.asList(text.split("\r?\n"));
     }
 
+    // первый абзац не больше трёх строк
     public String getTextPreview() {
-        if (text.length() < 512) {
-            return text;
+        int maxLen = 512;
+        List<String> parts = getTextParts();
+        if (parts.size() <= 1) {
+            if (text.length() < maxLen) {
+                return text;
+            } else {
+                return text.substring(0, maxLen) + "..";
+            }
+        } else if (parts.getFirst().length() < maxLen) {
+            return parts.getFirst() + "..";
         } else {
-            return text.substring(0, 512) + "..";
+            return parts.getFirst().substring(0, maxLen) + "..";
         }
     }
 

@@ -41,7 +41,9 @@ public class PostController {
             List<Comment> comments = commentService.findByPostId(post.getId());
             post.setComments(comments);
         }
-        model.addAttribute("posts", posts);
+        model.addAttribute("search", search);
+        model.addAttribute("posts", posts.posts());
+        model.addAttribute("paging", posts.paging());
 
         return "posts";
     }
@@ -63,22 +65,25 @@ public class PostController {
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String insert(@RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
-        File tempFile = File.createTempFile("prefix-", "-suffix");
-        Files.write(tempFile.toPath(), image.getBytes());
-        tempFile.deleteOnExit();
-
         Post post = new Post();
+
+        if (image != null) {
+            File tempFile = File.createTempFile("prefix-", "-suffix");
+            Files.write(tempFile.toPath(), image.getBytes());
+            tempFile.deleteOnExit();
+            post.setImagePath(tempFile.getAbsolutePath());
+        }
+
         post.setTitle(title);
         post.setText(text);
         post.setTags(tags);
-        post.setImagePath(tempFile.getAbsolutePath());
         Long id = postService.insert(post);
 
         return "redirect:/posts/" + id;
     }
 
     @PostMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String update(@RequestParam("id") Long id, @RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
+    public String update(@PathVariable("id") Long id, @RequestParam("title") String title, @RequestParam("text") String text, @RequestParam("image") MultipartFile image, @RequestParam("tags") String tags) throws IOException {
         Post post = postService.findById(id);
 
         if (image != null) {

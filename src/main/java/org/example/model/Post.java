@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Post {
@@ -43,7 +44,11 @@ public class Post {
         this.title = title;
     }
 
-    public String getTags() {
+    public List<String> getTags() {
+        return Arrays.asList(tags.split(" "));
+    }
+
+    public String getTagsAsText() {
         return tags;
     }
 
@@ -52,6 +57,14 @@ public class Post {
     }
 
     public String getText() {
+        return text;
+    }
+
+    public String getTextParts() {
+        return text;
+    }
+
+    public String getTextPreview() {
         return text;
     }
 

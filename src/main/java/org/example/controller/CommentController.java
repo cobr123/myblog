@@ -19,6 +19,7 @@ public class CommentController {
     @PostMapping
     public String add(@PathVariable("postId") Long postId, @RequestParam("text") String text) {
         Comment comment = new Comment();
+        comment.setPostId(postId);
         comment.setText(text);
         service.insert(comment);
 

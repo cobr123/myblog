@@ -39,7 +39,7 @@ public class JdbcNativePostRepository implements PostRepository {
                     pageSize,
                     getOffset(pageSize, pageNumber)
             );
-            return new Posts(posts, search, new Paging(pageNumber, pageSize, false, false));
+            return new Posts(posts, new Paging(pageNumber, pageSize, false, false));
         } else {
             List<Post> posts = jdbcTemplate.query(
                     "select id, title, tags, text, imagePath, likesCount from posts where tags like concat('%', ?, '%') order by id desc limit ? offset ?",
@@ -56,7 +56,7 @@ public class JdbcNativePostRepository implements PostRepository {
                     pageSize,
                     getOffset(pageSize, pageNumber)
             );
-            return new Posts(posts, search, new Paging(pageNumber, pageSize, false, false));
+            return new Posts(posts, new Paging(pageNumber, pageSize, false, false));
         }
     }
 
@@ -89,7 +89,7 @@ public class JdbcNativePostRepository implements PostRepository {
                     PreparedStatement ps = connection.prepareStatement("insert into posts(title, tags, text, imagePath, likesCount) values(?, ?, ?, ?, ?)",
                             Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, post.getTitle());
-                    ps.setString(2, post.getTags());
+                    ps.setString(2, post.getTagsAsText());
                     ps.setString(3, post.getText());
                     ps.setString(4, post.getImagePath());
                     ps.setInt(5, post.getLikesCount());
@@ -103,7 +103,7 @@ public class JdbcNativePostRepository implements PostRepository {
     @Override
     public void update(Post post) {
         jdbcTemplate.update("update posts set title = ?, tags = ?, text = ?, imagePath = ?, likesCount = ? where id = ?",
-                post.getTitle(), post.getTags(), post.getText(), post.getImagePath(), post.getLikesCount(), post.getId());
+                post.getTitle(), post.getTagsAsText(), post.getText(), post.getImagePath(), post.getLikesCount(), post.getId());
     }
 
     @Override

@@ -16,7 +16,7 @@ public class CommentService {
         this.repository = commentRepository;
     }
 
-    public List<Comment> findAll(Long postId) {
+    public List<Comment> findByPostId(Long postId) {
         return repository.findByPostId(postId);
     }
 

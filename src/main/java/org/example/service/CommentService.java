@@ -35,4 +35,8 @@ public class CommentService {
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
+
+    public void deleteByPostId(Long id) {
+        repository.deleteByPostId(id);
+    }
 }

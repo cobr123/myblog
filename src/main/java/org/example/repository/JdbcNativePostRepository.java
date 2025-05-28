@@ -24,8 +24,14 @@ public class JdbcNativePostRepository implements PostRepository {
 
     @Override
     public Posts findAll(String search, int pageSize, int pageNumber) {
+        List<Post> posts;
+        int totalCount;
         if (search == null || search.isEmpty()) {
-            List<Post> posts = jdbcTemplate.query(
+            totalCount = jdbcTemplate.query(
+                    "select count(*) as totalCount from posts",
+                    (rs, rowNum) -> rs.getInt("totalCount")
+            ).getFirst();
+            posts = jdbcTemplate.query(
                     "select id, title, tags, text, imagePath, likesCount from posts order by id desc limit ? offset ?",
                     (rs, rowNum) -> new Post(
                             rs.getLong("id"),
@@ -39,9 +45,13 @@ public class JdbcNativePostRepository implements PostRepository {
                     pageSize,
                     getOffset(pageSize, pageNumber)
             );
-            return new Posts(posts, new Paging(pageNumber, pageSize, false, false));
         } else {
-            List<Post> posts = jdbcTemplate.query(
+            totalCount = jdbcTemplate.query(
+                    "select count(*) as totalCount from posts where tags like concat('%', ?, '%')",
+                    (rs, rowNum) -> rs.getInt("totalCount"),
+                    search
+            ).getFirst();
+            posts = jdbcTemplate.query(
                     "select id, title, tags, text, imagePath, likesCount from posts where tags like concat('%', ?, '%') order by id desc limit ? offset ?",
                     (rs, rowNum) -> new Post(
                             rs.getLong("id"),
@@ -56,8 +66,8 @@ public class JdbcNativePostRepository implements PostRepository {
                     pageSize,
                     getOffset(pageSize, pageNumber)
             );
-            return new Posts(posts, new Paging(pageNumber, pageSize, false, false));
         }
+        return new Posts(posts, new Paging(pageNumber, pageSize, totalCount > pageSize * pageNumber, pageNumber > 1));
     }
 
     private int getOffset(int pageSize, int pageNumber) {

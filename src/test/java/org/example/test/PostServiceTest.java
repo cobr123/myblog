@@ -92,7 +92,42 @@ class PostServiceTest {
 
         postRepository.deleteById(foundPost.getId());
         assertThrows(NoSuchElementException.class, () -> postRepository.findById(foundPost.getId()));
+    }
 
+    @Test
+    void testPaging() {
+        Post post1 = new Post(1L, "title", "tags", "text", "imagePath", 0, new ArrayList<>());
+        postService.insert(post1);
+        Post post2 = new Post(1L, "title", "tags", "text", "imagePath", 0, new ArrayList<>());
+        postService.insert(post2);
+
+        Posts page1 = postRepository.findAll("", 1, 1);
+        assertEquals(1, page1.posts().size(), "Has 1 post");
+        assertEquals(true, page1.paging().hasNext(), "Has next page");
+        assertEquals(false, page1.paging().hasPrevious(), "Has not previous page");
+
+        Posts page2 = postRepository.findAll("", 1, 2);
+        assertEquals(1, page2.posts().size(), "Has 1 post");
+        assertEquals(false, page2.paging().hasNext(), "Has not next page");
+        assertEquals(true, page2.paging().hasPrevious(), "Has previous page");
+    }
+
+    @Test
+    void testPagingByTag() {
+        Post post1 = new Post(1L, "title", "tags", "text", "imagePath", 0, new ArrayList<>());
+        postService.insert(post1);
+        Post post2 = new Post(1L, "title", "tags", "text", "imagePath", 0, new ArrayList<>());
+        postService.insert(post2);
+
+        Posts page1 = postRepository.findAll("tags", 1, 1);
+        assertEquals(1, page1.posts().size(), "Has 1 post");
+        assertEquals(true, page1.paging().hasNext(), "Has next page");
+        assertEquals(false, page1.paging().hasPrevious(), "Has not previous page");
+
+        Posts page2 = postRepository.findAll("tags", 1, 2);
+        assertEquals(1, page2.posts().size(), "Has 1 post");
+        assertEquals(false, page2.paging().hasNext(), "Has not next page");
+        assertEquals(true, page2.paging().hasPrevious(), "Has previous page");
     }
 
 }

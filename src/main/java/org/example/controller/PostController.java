@@ -77,6 +77,19 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
+    @PostMapping("/{id}/like")
+    public String like(@PathVariable("id") Long id, @PathVariable("like") boolean like) {
+        Post post = postService.findById(id);
+        if (like) {
+            post.setLikesCount(post.getLikesCount() + 1);
+        } else {
+            post.setLikesCount(post.getLikesCount() - 1);
+        }
+        postService.update(post);
+
+        return "redirect:/posts/" + id;
+    }
+
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
         postService.deleteById(id);

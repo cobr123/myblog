@@ -1,4 +1,4 @@
-package org.example.test;
+package org.example.test.controller;
 
 import org.example.controller.CommentController;
 import org.junit.jupiter.api.BeforeEach;

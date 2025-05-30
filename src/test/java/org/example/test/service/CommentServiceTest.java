@@ -1,7 +1,6 @@
-package org.example.test;
+package org.example.test.service;
 
 import org.example.TestConfig;
-import org.example.configuration.DataSourceConfiguration;
 import org.example.model.Comment;
 import org.example.repository.CommentRepository;
 import org.example.service.CommentService;
@@ -18,7 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {DataSourceConfiguration.class, TestConfig.class})
+@ContextConfiguration(classes = {TestConfig.class})
 class CommentServiceTest {
 
     @Autowired

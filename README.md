@@ -1,3 +1,3 @@
 # Как запустить
-* ```docker compose up```
+* ```./gradlew bootRun```
 * открыть в брауезере http://localhost:8080/

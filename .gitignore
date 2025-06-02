@@ -3,6 +3,11 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+.gradle
+/gradlew
+/gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+
 ### IntelliJ IDEA ###
 .idea/
 .idea/modules.xml

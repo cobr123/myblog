@@ -1,6 +1,0 @@
-version: "3"
-services:
-  myblog:
-    build: . # https://github.com/cobr123/myblog.git
-    ports:
-      - '8080:8080'

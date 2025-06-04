@@ -1,3 +1,3 @@
 # Как запустить
-* ```./gradlew bootRun```
-* открыть в брауезере http://localhost:8080/
+* ```gradle bootRun```
+* открыть в браузере http://localhost:8080/

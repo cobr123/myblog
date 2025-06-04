@@ -30,7 +30,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-tasks.named("bootRun") {
-	mainClass = 'org.example.MyblogApplication'
-}

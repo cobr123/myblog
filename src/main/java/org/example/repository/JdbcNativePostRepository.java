@@ -32,14 +32,14 @@ public class JdbcNativePostRepository implements PostRepository {
                     (rs, rowNum) -> rs.getInt("totalCount")
             ).getFirst();
             posts = jdbcTemplate.query(
-                    "select id, title, tags, text, imagePath, likesCount from posts order by id desc limit ? offset ?",
+                    "select id, title, tags, text, imagePath from posts order by id desc limit ? offset ?",
                     (rs, rowNum) -> new Post(
                             rs.getLong("id"),
                             rs.getString("title"),
                             rs.getString("tags"),
                             rs.getString("text"),
                             rs.getString("imagePath"),
-                            rs.getInt("likesCount"),
+                            0,
                             new ArrayList<>()
                     ),
                     pageSize,
@@ -52,14 +52,14 @@ public class JdbcNativePostRepository implements PostRepository {
                     search
             ).getFirst();
             posts = jdbcTemplate.query(
-                    "select id, title, tags, text, imagePath, likesCount from posts where tags like concat('%', ?, '%') order by id desc limit ? offset ?",
+                    "select id, title, tags, text, imagePath from posts where tags like concat('%', ?, '%') order by id desc limit ? offset ?",
                     (rs, rowNum) -> new Post(
                             rs.getLong("id"),
                             rs.getString("title"),
                             rs.getString("tags"),
                             rs.getString("text"),
                             rs.getString("imagePath"),
-                            rs.getInt("likesCount"),
+                            0,
                             new ArrayList<>()
                     ),
                     search,
@@ -77,14 +77,14 @@ public class JdbcNativePostRepository implements PostRepository {
     @Override
     public Post findById(Long id) {
         return jdbcTemplate.query(
-                "select id, title, tags, text, imagePath, likesCount from posts where id = ?",
+                "select id, title, tags, text, imagePath from posts where id = ?",
                 (rs, rowNum) -> new Post(
                         rs.getLong("id"),
                         rs.getString("title"),
                         rs.getString("tags"),
                         rs.getString("text"),
                         rs.getString("imagePath"),
-                        rs.getInt("likesCount"),
+                        0,
                         new ArrayList<>()
                 ),
                 id
@@ -96,13 +96,12 @@ public class JdbcNativePostRepository implements PostRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-                    PreparedStatement ps = connection.prepareStatement("insert into posts(title, tags, text, imagePath, likesCount) values(?, ?, ?, ?, ?)",
+                    PreparedStatement ps = connection.prepareStatement("insert into posts(title, tags, text, imagePath) values(?, ?, ?, ?)",
                             Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, post.getTitle());
                     ps.setString(2, post.getTagsAsText());
                     ps.setString(3, post.getText());
                     ps.setString(4, post.getImagePath());
-                    ps.setInt(5, post.getLikesCount());
                     return ps;
                 },
                 keyHolder);
@@ -112,8 +111,8 @@ public class JdbcNativePostRepository implements PostRepository {
 
     @Override
     public void update(Post post) {
-        jdbcTemplate.update("update posts set title = ?, tags = ?, text = ?, imagePath = ?, likesCount = ? where id = ?",
-                post.getTitle(), post.getTagsAsText(), post.getText(), post.getImagePath(), post.getLikesCount(), post.getId());
+        jdbcTemplate.update("update posts set title = ?, tags = ?, text = ?, imagePath = ? where id = ?",
+                post.getTitle(), post.getTagsAsText(), post.getText(), post.getImagePath(), post.getId());
     }
 
     @Override

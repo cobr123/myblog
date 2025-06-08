@@ -4,6 +4,7 @@ import org.example.model.Comment;
 import org.example.model.Post;
 import org.example.model.Posts;
 import org.example.service.CommentService;
+import org.example.service.LikeService;
 import org.example.service.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.List;
 
 
@@ -23,10 +25,12 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final LikeService likeService;
 
-    public PostController(PostService postService, CommentService commentService) {
+    public PostController(PostService postService, CommentService commentService, LikeService likeService) {
         this.postService = postService;
         this.commentService = commentService;
+        this.likeService = likeService;
     }
 
     @GetMapping
@@ -40,6 +44,8 @@ public class PostController {
         for (Post post : posts.posts()) {
             List<Comment> comments = commentService.findByPostId(post.getId());
             post.setComments(comments);
+            int likesCount = likeService.findByPostId(post.getId());
+            post.setLikesCount(likesCount);
         }
         model.addAttribute("search", search);
         model.addAttribute("posts", posts.posts());
@@ -53,6 +59,8 @@ public class PostController {
         Post post = postService.findById(id);
         List<Comment> comments = commentService.findByPostId(post.getId());
         post.setComments(comments);
+        int likesCount = likeService.findByPostId(post.getId());
+        post.setLikesCount(likesCount);
         model.addAttribute("post", post);
 
         return "post";
@@ -101,16 +109,10 @@ public class PostController {
     }
 
     @PostMapping("/{id}/like")
-    public String like(@PathVariable("id") Long id, @RequestParam("like") boolean like) {
-        Post post = postService.findById(id);
-        if (like) {
-            post.setLikesCount(post.getLikesCount() + 1);
-        } else {
-            post.setLikesCount(post.getLikesCount() - 1);
-        }
-        postService.update(post);
+    public String like(@PathVariable("id") Long postId, @RequestParam("like") boolean reaction) {
+        likeService.insert(postId, reaction, Instant.now());
 
-        return "redirect:/posts/" + id;
+        return "redirect:/posts/" + postId;
     }
 
     @GetMapping("/{id}/edit")
@@ -118,6 +120,8 @@ public class PostController {
         Post post = postService.findById(id);
         List<Comment> comments = commentService.findByPostId(post.getId());
         post.setComments(comments);
+        int likesCount = likeService.findByPostId(post.getId());
+        post.setLikesCount(likesCount);
         model.addAttribute("post", post);
 
         return "add-post";
@@ -127,6 +131,7 @@ public class PostController {
     public String delete(@PathVariable("id") Long id) {
         postService.deleteById(id);
         commentService.deleteByPostId(id);
+        likeService.deleteByPostId(id);
 
         return "redirect:/posts";
     }

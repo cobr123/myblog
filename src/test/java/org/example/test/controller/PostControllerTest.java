@@ -4,26 +4,21 @@ import org.example.controller.PostController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = PostControllerTest.TestMockConfig.class)
 public class PostControllerTest {
 
-    @Autowired
+    @MockitoBean
     private PostController controller;
 
     private MockMvc mockMvc;
@@ -134,11 +129,4 @@ public class PostControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Configuration
-    static class TestMockConfig {
-        @Bean
-        public PostController postController() {
-            return mock(PostController.class);
-        }
-    }
 }

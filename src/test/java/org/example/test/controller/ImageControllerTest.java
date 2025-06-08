@@ -4,24 +4,19 @@ import org.example.controller.ImageController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = ImageControllerTest.TestMockConfig.class)
 public class ImageControllerTest {
 
-    @Autowired
+    @MockitoBean
     private ImageController controller;
 
     private MockMvc mockMvc;
@@ -43,11 +38,4 @@ public class ImageControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Configuration
-    static class TestMockConfig {
-        @Bean
-        public ImageController imageController() {
-            return mock(ImageController.class);
-        }
-    }
 }

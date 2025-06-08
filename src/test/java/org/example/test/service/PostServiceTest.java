@@ -1,16 +1,13 @@
 package org.example.test.service;
 
-import org.example.TestConfig;
 import org.example.model.Post;
 import org.example.model.Posts;
 import org.example.repository.PostRepository;
 import org.example.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -18,8 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
+@SpringBootTest
 class PostServiceTest {
 
     @Autowired
